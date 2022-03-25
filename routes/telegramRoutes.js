@@ -1,4 +1,5 @@
 require("isomorphic-fetch");
+const FormData = require("form-data");
 const express = require("express");
 const qrcode = require("../qrcode");
 const router = express.Router();
