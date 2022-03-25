@@ -24,7 +24,7 @@ const handleNewMessage = async (req, res, _next) => {
     }
   );
 
-  qrcode.createImageFromTextSync(userMessage.text, (error, readStream) => {
+  qrcode.createImageFromTextSync(userMessage.text, async (error, readStream) => {
     if (!error) {
       let form = new FormData();
       form.append("photo", readStream);
