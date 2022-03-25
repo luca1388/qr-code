@@ -15,7 +15,6 @@ export default async function handler(request, response) {
 
 const sendMessage = async (chatId, text) => {
   const body = {
-    body: {
       chat_id: chatId,
       method: "sendMessage",
       text: text,
