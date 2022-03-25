@@ -4,6 +4,7 @@ const router = express.Router();
 const telegramAPIBaseUrl = "https://api.telegram.org/bot";
 
 const handleNewMessage = async (req, res, _next) => {
+  console.log(req.body);
   const userMessage = req.body.message;
 
   const body = {
@@ -12,11 +13,14 @@ const handleNewMessage = async (req, res, _next) => {
     text: userMessage,
   };
 
-  await fetch(`${telegramAPIBaseUrl}${process.env.TELEGRAM_TOKEN}/sendMessage`, {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: { "Content-Type": "application/json" },
-  });
+  await fetch(
+    `${telegramAPIBaseUrl}${process.env.TELEGRAM_TOKEN}/sendMessage`,
+    {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: { "Content-Type": "application/json" },
+    }
+  );
 
   res.end();
 };
