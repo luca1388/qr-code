@@ -23,7 +23,22 @@ const handleNewMessage = async (req, res, _next) => {
       headers: { "Content-Type": "application/json" },
     }
   );
-  // let form = new FormData();
+
+  qrcode.createImageFromTextSync(userMessage.text, (error, readStream) => {
+    if (!error) {
+      let form = new FormData();
+      form.append("photo", readStream);
+      await fetch(
+        `${telegramAPIBaseUrl}${process.env.TELEGRAM_TOKEN}/sendPhoto?chat_id=${req.body.message.chat.id}`,
+        {
+          method: "POST",
+          body: form,
+        }
+      );
+      res.end();
+    }
+    res.end();
+  });
   // const stream = await qrcode.createStreamFromText(userMessage.text);
 
   // form.append("photo", stream);
@@ -35,7 +50,7 @@ const handleNewMessage = async (req, res, _next) => {
   //   }
   // );
 
-  res.end();
+  
 };
 
 router.post("/", handleNewMessage);

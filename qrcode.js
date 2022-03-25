@@ -21,6 +21,24 @@ const createImageFromText = (text, outputPath) => {
   });
 };
 
+const createImageFromTextSync = (text, callback) => {
+  QRCode.toFile(
+    outputPath,
+    text,
+    {
+      type: "png",
+    },
+    (err) => {
+      if (err) {
+        callback(err);
+      }
+      console.log("done");
+      let readStream = fs.createReadStream(outputPath);
+      callback(null, readStream);
+    }
+  );
+};
+
 const src = "./qr.png";
 
 const createStreamFromText = (text) => {
@@ -46,4 +64,5 @@ const createStreamFromText = (text) => {
 module.exports = {
   createImageFromText: createImageFromText,
   createStreamFromText: createStreamFromText,
+  createImageFromTextSync: createImageFromTextSync
 };
