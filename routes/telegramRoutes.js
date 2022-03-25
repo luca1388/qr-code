@@ -1,5 +1,6 @@
 require("isomorphic-fetch");
 const express = require("express");
+const qrcode = require("../qrcode");
 const router = express.Router();
 const telegramAPIBaseUrl = "https://api.telegram.org/bot";
 
@@ -15,6 +16,18 @@ const handleNewMessage = async (req, res, _next) => {
 
   await fetch(
     `${telegramAPIBaseUrl}${process.env.TELEGRAM_TOKEN}/sendMessage`,
+    {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+  let form = new FormData();
+  const stream = await qrcode.createStreamFromText(userMessage.text);
+
+  form.append("photo", stream);
+  await fetch(
+    `${telegramAPIBaseUrl}${process.env.TELEGRAM_TOKEN}/sendPhoto?chat_id=${req.body.message.chat.id}`,
     {
       method: "POST",
       body: JSON.stringify(body),

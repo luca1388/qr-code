@@ -1,5 +1,5 @@
-import fs from 'fs';
-import QRCode from 'qrcode';
+const fs = require("fs");
+const QRCode = require("qrcode");
 
 const createImageFromText = (text, outputPath) => {
   return new Promise((resolve, reject) => {
@@ -21,7 +21,7 @@ const createImageFromText = (text, outputPath) => {
   });
 };
 
-const src = './qr.png';
+const src = "./qr.png";
 
 const createStreamFromText = (text) => {
   return new Promise((resolve, reject) => {
@@ -43,3 +43,7 @@ const createStreamFromText = (text) => {
   });
 };
 
+module.exports = {
+  createImageFromText: createImageFromText,
+  createStreamFromText: createStreamFromText,
+};
