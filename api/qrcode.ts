@@ -1,4 +1,3 @@
-// import qrcodTest from "../index";
 import fetch from "node-fetch";
 const telegramAPIBaseUrl = "https://api.telegram.org/bot";
 

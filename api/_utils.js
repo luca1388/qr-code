@@ -43,7 +43,3 @@ const createStreamFromText = (text) => {
   });
 };
 
-module.exports = {
-  createImageFromText: createImageFromText,
-  createStreamFromText: createStreamFromText
-};
