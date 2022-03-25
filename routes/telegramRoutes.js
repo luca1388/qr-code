@@ -23,23 +23,24 @@ const handleNewMessage = async (req, res, _next) => {
           }
         );
         res.end();
-      }
-      const body = {
-        chat_id: req.body.message.chat.id,
-        method: "sendMessage",
-        text: "Something went wrong :\ Please try again later.",
-      };
-    
-      await fetch(
-        `${telegramAPIBaseUrl}${process.env.TELEGRAM_TOKEN}/sendMessage`,
-        {
-          method: "POST",
-          body: JSON.stringify(body),
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      } else {
+        const body = {
+          chat_id: req.body.message.chat.id,
+          method: "sendMessage",
+          text: "Something went wrong : Please try again later.",
+        };
 
-      res.end();
+        await fetch(
+          `${telegramAPIBaseUrl}${process.env.TELEGRAM_TOKEN}/sendMessage`,
+          {
+            method: "POST",
+            body: JSON.stringify(body),
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+
+        res.end();
+      }
     }
   );
 };
