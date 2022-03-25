@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+// import fetch from "node-fetch";
 const telegramAPIBaseUrl = "https://api.telegram.org/bot";
 
 export default async function handler(request, response) {
