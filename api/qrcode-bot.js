@@ -1,5 +1,4 @@
 import qrcodTest from "../index";
-import fetch from "node-fetch";
 
 export default function handler(request, response) {
   const { message } = request.body;
