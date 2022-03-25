@@ -1,3 +1,5 @@
+import 'isomorphic-fetch';
+
 const telegramAPIBaseUrl = "https://api.telegram.org/bot";
 
 export default async function handler(request, response) {
