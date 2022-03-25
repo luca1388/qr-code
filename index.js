@@ -1,5 +1,5 @@
-const QRCode = require("qrcode");
-const fs = require("fs");
+import fs from 'fs';
+import QRCode from 'qrcode';
 
 const createImageFromText = (text, outputPath) => {
   return new Promise((resolve, reject) => {
