@@ -1,4 +1,4 @@
-import 'isomorphic-fetch';
+import "isomorphic-fetch";
 
 const telegramAPIBaseUrl = "https://api.telegram.org/bot";
 
@@ -15,12 +15,12 @@ export default async function handler(request, response) {
 
 const sendMessage = async (chatId, text) => {
   const body = {
-      chat_id: chatId,
-      method: "sendMessage",
-      text: text,
-    };
+    chat_id: chatId,
+    method: "sendMessage",
+    text: text,
+  };
 
-  const res = await fetch(
+  await fetch(
     `${telegramAPIBaseUrl}${process.env.TELEGRAM_TOKEN}/sendMessage`,
     {
       method: "POST",
@@ -28,8 +28,4 @@ const sendMessage = async (chatId, text) => {
       headers: { "Content-Type": "application/json" },
     }
   );
-  console.log(res.status);
-  const data = await res.json();
-  console.log(data);
-  return data;
 };
