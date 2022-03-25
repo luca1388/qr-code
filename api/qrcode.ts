@@ -23,7 +23,7 @@ const sendMessage = async (chatId, text) => {
   };
 
   const res = await fetch(
-    `${telegramAPIBaseUrl}/${process.env.TELEGRAM_TOKEN}/sendMessage`,
+    `${telegramAPIBaseUrl}${process.env.TELEGRAM_TOKEN}/sendMessage`,
     {
       method: "POST",
       body: JSON.stringify(body),
