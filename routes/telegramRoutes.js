@@ -7,16 +7,18 @@ const handleNewMessage = async (req, res, _next) => {
   const userMessage = req.body.message;
 
   const body = {
-    chat_id: chatId,
+    chat_id: req.body.message.chat.id,
     method: "sendMessage",
     text: userMessage,
   };
 
-  fetch(`${telegramAPIBaseUrl}${process.env.TELEGRAM_TOKEN}/sendMessage`, {
+  await fetch(`${telegramAPIBaseUrl}${process.env.TELEGRAM_TOKEN}/sendMessage`, {
     method: "POST",
     body: JSON.stringify(body),
     headers: { "Content-Type": "application/json" },
   });
+
+  res.end();
 };
 
 router.post("/", handleNewMessage);
