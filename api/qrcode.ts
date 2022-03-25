@@ -1,7 +1,3 @@
-
-import createFetch from '@vercel/fetch';
-const fetch = createFetch();
-
 const telegramAPIBaseUrl = "https://api.telegram.org/bot";
 
 export default async function handler(request, response) {
