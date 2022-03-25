@@ -8,9 +8,9 @@ export default async function handler(request, response) {
   // message.text
   console.log(message);
 
-  await sendMessage(message.chat.id, "test!");
-
+  sendMessage(message.chat.id, "test!");
   response.status(200);
+  
 }
 
 const sendMessage = async (chatId, text) => {
