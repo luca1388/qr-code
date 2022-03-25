@@ -23,17 +23,17 @@ const handleNewMessage = async (req, res, _next) => {
       headers: { "Content-Type": "application/json" },
     }
   );
-  let form = new FormData();
-  const stream = await qrcode.createStreamFromText(userMessage.text);
+  // let form = new FormData();
+  // const stream = await qrcode.createStreamFromText(userMessage.text);
 
-  form.append("photo", stream);
-  await fetch(
-    `${telegramAPIBaseUrl}${process.env.TELEGRAM_TOKEN}/sendPhoto?chat_id=${req.body.message.chat.id}`,
-    {
-      method: "POST",
-      body: form,
-    }
-  );
+  // form.append("photo", stream);
+  // await fetch(
+  //   `${telegramAPIBaseUrl}${process.env.TELEGRAM_TOKEN}/sendPhoto?chat_id=${req.body.message.chat.id}`,
+  //   {
+  //     method: "POST",
+  //     body: form,
+  //   }
+  // );
 
   res.end();
 };
