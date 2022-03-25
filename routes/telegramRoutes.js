@@ -10,7 +10,7 @@ const handleNewMessage = async (req, res, _next) => {
   const body = {
     chat_id: req.body.message.chat.id,
     method: "sendMessage",
-    text: userMessage,
+    text: userMessage.text,
   };
 
   await fetch(
