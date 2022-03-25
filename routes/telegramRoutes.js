@@ -31,8 +31,7 @@ const handleNewMessage = async (req, res, _next) => {
     `${telegramAPIBaseUrl}${process.env.TELEGRAM_TOKEN}/sendPhoto?chat_id=${req.body.message.chat.id}`,
     {
       method: "POST",
-      body: JSON.stringify(body),
-      headers: { "Content-Type": "application/json" },
+      body: form,
     }
   );
 
