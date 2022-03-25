@@ -18,8 +18,7 @@ const sendMessage = async (chatId, text) => {
       chat_id: chatId,
       method: "sendMessage",
       text: text,
-    },
-  };
+    };
 
   const res = await fetch(
     `${telegramAPIBaseUrl}${process.env.TELEGRAM_TOKEN}/sendMessage`,
