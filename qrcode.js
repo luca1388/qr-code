@@ -23,7 +23,7 @@ const createImageFromText = (text, outputPath) => {
 
 const createImageFromTextSync = (text, callback) => {
   QRCode.toFile(
-    outputPath,
+    './qr.png',
     text,
     {
       type: "png",
