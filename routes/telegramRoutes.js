@@ -12,8 +12,8 @@ const handleNewMessage = async (req, res, _next) => {
 
   const chatId = chat.id;
   const userId = from.id;
-
-  if (getDBUser(chatId)) {
+  const userFound = await getDBUser(chatId);
+  if (userFound) {
     console.log("user found!");
   } else {
     createUser({ chat_id: chatId, payment: null, id: userId, count: 0 });
