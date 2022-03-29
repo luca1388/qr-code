@@ -1,13 +1,9 @@
-require("isomorphic-fetch");
-const FormData = require("form-data");
 const express = require("express");
 const qrcode = require("../qrcode");
-const router = express.Router();
-const telegramAPIBaseUrl = "https://api.telegram.org/bot";
-const usersUrl = "https://api-project-941743174493.firebaseio.com/users.json";
-const patchUserUrl = (userid) =>
-  `https://api-project-941743174493.firebaseio.com/users/${userid}.json`;
+const { createUser, getDBUser, patchUser } = require("../models/users");
+const { sendMessage, sendPhoto } = require("../telegram");
 
+const router = express.Router();
 const FREE_COUNT_THRESHOLD = 5;
 
 const handleNewMessage = async (req, res, _next) => {
@@ -77,114 +73,16 @@ const handleNewMessage = async (req, res, _next) => {
 
   qrcode.createImageFromTextSync(message.text, async (error, readStream) => {
     if (!error) {
-      let form = new FormData();
-      form.append("photo", readStream);
-      await fetch(
-        `${telegramAPIBaseUrl}${process.env.TELEGRAM_TOKEN}/sendPhoto?chat_id=${req.body.message.chat.id}`,
-        {
-          method: "POST",
-          body: form,
-        }
-      );
-      res.end();
+      sendPhoto(chatId, readStream);
     } else {
-      const body = {
+      sendMessage({
         chat_id: req.body.message.chat.id,
         method: "sendMessage",
         text: "Something went wrong : Please try again later.",
-      };
-
-      await fetch(
-        `${telegramAPIBaseUrl}${process.env.TELEGRAM_TOKEN}/sendMessage`,
-        {
-          method: "POST",
-          body: JSON.stringify(body),
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      res.end();
+      });
     }
+    res.end();
   });
-};
-
-const getDBUser = async (chatId) => {
-  const users = await readUsersList();
-  return users.find((user) => user.chat_id === chatId);
-};
-
-const patchUser = async (id, data) => {
-  let response;
-  console.log("patching user with data:");
-  console.log(data);
-  try {
-    response = await fetch(patchUserUrl(id), {
-      method: "PATCH",
-      body: JSON.stringify(data),
-      headers: { "Content-Type": "application/json" },
-    });
-    console.log("User updated");
-  } catch (e) {
-    console.log("User not updated");
-    throw new Error(e);
-  }
-
-  if (response.status === 200) {
-    console.log("User updated with success");
-  }
-};
-
-const createUser = async (user) => {
-  console.log("Creating this user: ");
-  console.log(user);
-  console.log(`url: ${usersUrl}`);
-  let response;
-  try {
-    response = await fetch(usersUrl, {
-      method: "POST",
-      body: JSON.stringify(user),
-      headers: { "Content-Type": "application/json" },
-    });
-    console.log("User created");
-  } catch (e) {
-    console.log("User not created");
-    throw new Error(e);
-  }
-
-  console.log(response.status);
-  if (response.status === 200) {
-    console.log("User created with success");
-  }
-};
-
-const readUsersList = async () => {
-  let response, users;
-  try {
-    response = await fetch(usersUrl, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
-    users = await response.json();
-  } catch (e) {
-    console.error(e);
-    users = [];
-  }
-  users = Object.keys(users).map((userKey) => ({
-    ...users[userKey],
-    id: userKey,
-  }));
-  return users;
-};
-
-const sendMessage = async (sendObject) => {
-  await fetch(
-    `${telegramAPIBaseUrl}${process.env.TELEGRAM_TOKEN}/sendMessage`,
-    {
-      method: "POST",
-      body: JSON.stringify(sendObject),
-      headers: { "Content-Type": "application/json" },
-    }
-  );
 };
 
 router.post("/", handleNewMessage);
