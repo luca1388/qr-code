@@ -8,6 +8,8 @@ const usersUrl = "https://api-project-941743174493.firebaseio.com/users.json";
 const patchUserUrl = (userid) =>
   `https://api-project-941743174493.firebaseio.com/users/${userid}.json`;
 
+const FREE_COUNT_THRESHOLD = 5;
+
 const handleNewMessage = async (req, res, _next) => {
   console.log(req.body);
   const { message } = req.body;
@@ -19,7 +21,19 @@ const handleNewMessage = async (req, res, _next) => {
   console.log(userFound);
   if (userFound) {
     console.log("user found!");
-    patchUser(userFound.id, { count: userFound.count + 1 });
+    if (userFound.count < FREE_COUNT_THRESHOLD) {
+      patchUser(userFound.id, { count: userFound.count + 1 });
+    } else {
+      if (!userFound.premium) {
+        // send message for payment
+        sendMessage({
+          chat_id: chatId,
+          method: "sendMessage",
+          text: `Hai raggiunto il limite di ${FREE_COUNT_THRESHOLD} QR code generati gratuitamente. Per continuare ad utilizzare il servizio SENZA LIMITI effettua il pagamento del piano premium che ti garantisce un numero illimitato di QR code generati.`,
+        });
+        res.end();
+      }
+    }
   } else {
     console.log("User not found, creating ...");
     await createUser({
