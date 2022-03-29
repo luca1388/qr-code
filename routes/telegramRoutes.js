@@ -19,7 +19,7 @@ const handleNewMessage = async (req, res, _next) => {
   console.log(userFound);
   if (userFound) {
     console.log("user found!");
-    patchUser(userFound.chat_id, { count: userFound.count + 1 });
+    patchUser(userFound.id, { count: userFound.count + 1 });
   } else {
     console.log("User not found, creating ...");
     await createUser({
