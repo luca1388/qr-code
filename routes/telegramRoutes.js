@@ -18,7 +18,7 @@ const handleNewMessage = async (req, res, _next) => {
     console.log("user found!");
   } else {
     console.log("User not found, creating ...");
-    createUser({ chat_id: chatId, payment: null, id: userId, count: 0 });
+    await createUser({ chat_id: chatId, payment: null, id: userId, count: 0 });
     sendMessage({
       chat_id: chatId,
       method: "sendMessage",
