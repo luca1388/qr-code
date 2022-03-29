@@ -13,9 +13,11 @@ const handleNewMessage = async (req, res, _next) => {
   const chatId = chat.id;
   const userId = from.id;
   const userFound = await getDBUser(chatId);
+  console.log(userFound);
   if (userFound) {
     console.log("user found!");
   } else {
+    console.log("User not found, creating ...");
     createUser({ chat_id: chatId, payment: null, id: userId, count: 0 });
     sendMessage({
       chat_id: chatId,
@@ -69,7 +71,9 @@ const createUser = async (user) => {
       body: user,
       headers: { "Content-Type": "application/json" },
     });
+    console.log("User created");
   } catch (e) {
+    console.log("User not created");
     throw new Error(e);
   }
 };
