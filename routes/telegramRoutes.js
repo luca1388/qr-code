@@ -4,6 +4,7 @@ const express = require("express");
 const qrcode = require("../qrcode");
 const router = express.Router();
 const telegramAPIBaseUrl = "https://api.telegram.org/bot";
+const usersUrl = "https://api-project-941743174493.firebaseio.com/users.json";
 
 const handleNewMessage = async (req, res, _next) => {
   console.log(req.body);
@@ -67,12 +68,12 @@ const getDBUser = async (chatId) => {
 const createUser = async (user) => {
   console.log("Creating this user: ");
   console.log(user);
+  console.log(`url: ${usersUrl}`);
   let response;
   try {
     response = await fetch(usersUrl, {
       method: "POST",
       body: user,
-      headers: { "Content-Type": "application/json" },
     });
     console.log("User created");
   } catch (e) {
@@ -85,8 +86,6 @@ const createUser = async (user) => {
     console.log("User created with success");
   }
 };
-
-const usersUrl = "https://api-project-941743174493.firebaseio.com/users.json";
 
 const readUsersList = async () => {
   let response, users;
