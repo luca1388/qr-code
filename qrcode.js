@@ -35,7 +35,7 @@ const createImageFromTextSync = (text, uuid, callback) => {
         console.error("Image NOT created");
         callback(err);
       }
-      console.log("Image created with success");
+      console.log("Image created");
       let readStream = fs.createReadStream(imagePath);
       callback(null, readStream);
     }
