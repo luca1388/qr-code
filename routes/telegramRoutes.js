@@ -47,12 +47,11 @@ const handleNewMessage = async (req, res, _next) => {
   const userFound = await getDBUser(chatId);
   if (userFound) {
     console.log("User already provisioned");
-    if (userFound.count < FREE_COUNT_THRESHOLD) {
-      console.log("Updating qr counts for user");
-      patchUser(userFound.id, { count: userFound.count + 1 });
-    } else {
+
+    if (userFound.count > FREE_COUNT_THRESHOLD) {
       console.log("User exceeds free count limit");
       if (!userFound.premium) {
+        console.log("User is not premium");
         console.log("Sending message for payment");
         // send message for payment
         sendMessage({
@@ -68,28 +67,36 @@ const handleNewMessage = async (req, res, _next) => {
     await createUser({
       chat_id: chatId,
       payment_id: undefined,
-      id: userId,
+      from_id: userId,
       count: 0,
       premium: false,
     });
   }
-  console.log("Start creating QR image");
-  qrcode.createImageFromTextSync(message.text, async (error, readStream) => {
-    if (!error) {
-      console.log("Image created: sending to user ...");
-      sendPhoto(chatId, readStream);
-    } else {
-      console.error(
-        "Error while creating image: sending error message to user ..."
-      );
-      sendMessage({
-        chat_id: req.body.message.chat.id,
-        method: "sendMessage",
-        text: "Something went wrong, please try again later.",
-      });
+
+  console.log("Updating qr counts for user");
+  await patchUser(userFound.id, { count: userFound.count + 1 });
+
+  console.log("Start creating QR code");
+  qrcode.createImageFromTextSync(
+    message.text,
+    `${chatId}`,
+    async (error, readStream) => {
+      if (!error) {
+        console.log("QR code created: sending to user ...");
+        sendPhoto(chatId, readStream);
+      } else {
+        console.error(
+          "Error while creating QR code: sending error message to user ..."
+        );
+        sendMessage({
+          chat_id: req.body.message.chat.id,
+          method: "sendMessage",
+          text: "Something went wrong, please try again later.",
+        });
+      }
+      closeRequest(res);
     }
-    closeRequest(res);
-  });
+  );
 };
 
 const closeRequest = (res) => {

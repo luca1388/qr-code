@@ -11,9 +11,10 @@ const createImageFromText = (text, outputPath) => {
       },
       (err) => {
         if (err) {
+          console.error("Image NOT created");
           reject(err);
         }
-        console.log("done");
+        console.log("Image created with success");
         let readStream = fs.createReadStream(outputPath);
         resolve(readStream);
       }
@@ -21,19 +22,21 @@ const createImageFromText = (text, outputPath) => {
   });
 };
 
-const createImageFromTextSync = (text, callback) => {
+const createImageFromTextSync = (text, uuid, callback) => {
+  const imagePath = `./qr-${uuid}.png`;
   QRCode.toFile(
-    "./qr.png",
+    imagePath,
     text,
     {
       type: "png",
     },
     (err) => {
       if (err) {
+        console.error("Image NOT created");
         callback(err);
       }
-      console.log("done");
-      let readStream = fs.createReadStream("./qr.png");
+      console.log("Image created with success");
+      let readStream = fs.createReadStream(imagePath);
       callback(null, readStream);
     }
   );
@@ -52,9 +55,10 @@ const createStreamFromText = (text) => {
       },
       (err) => {
         if (err) {
+          console.error("Image NOT created");
           reject(err);
         }
-        console.log("done");
+        console.log("Image created with success");
         resolve(stream);
       }
     );

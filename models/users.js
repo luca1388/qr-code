@@ -49,6 +49,11 @@ const createUser = async (user) => {
   if (response.status === 200) {
     console.log("User created with success");
   }
+
+  const data = await response.json();
+
+  // id of new item created in DB
+  return data.name;
 };
 
 const readUsersList = async () => {
