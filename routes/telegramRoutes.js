@@ -71,6 +71,8 @@ const getDBUser = async (chatId) => {
 
 const patchUser = async (id, data) => {
   let response;
+  console.log("patching user with data:");
+  console.log(data);
   try {
     response = await fetch(patchUserUrl(id), {
       method: "PATCH",
