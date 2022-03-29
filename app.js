@@ -39,3 +39,17 @@ app.use((error, _req, res, next) => {
 });
 
 app.listen(process.env.PORT || 5000);
+
+// const usersUrl = "https://api-project-941743174493.firebaseio.com/users.json";
+
+// const readUsersList = async () => {
+//   const response = await fetch(usersUrl, {
+//     method: "GET",
+//     headers: { "Content-Type": "application/json" },
+//   });
+//   const users = await response.json();
+
+//   console.log(users);
+// };
+
+// readUsersList();
