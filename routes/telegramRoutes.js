@@ -65,6 +65,9 @@ const getDBUser = async (chatId) => {
 };
 
 const createUser = async (user) => {
+  console.log("Creating this user: ");
+  console.log(user);
+  let response;
   try {
     response = await fetch(usersUrl, {
       method: "POST",
@@ -75,6 +78,11 @@ const createUser = async (user) => {
   } catch (e) {
     console.log("User not created");
     throw new Error(e);
+  }
+
+  console.log(response.status);
+  if (response.status === 200) {
+    console.log("User created with success");
   }
 };
 
