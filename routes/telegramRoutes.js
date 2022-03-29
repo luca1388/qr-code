@@ -73,7 +73,8 @@ const createUser = async (user) => {
   try {
     response = await fetch(usersUrl, {
       method: "POST",
-      body: user,
+      body: JSON.stringify(user),
+      headers: { "Content-Type": "application/json" },
     });
     console.log("User created");
   } catch (e) {
