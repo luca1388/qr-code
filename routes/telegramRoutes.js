@@ -5,6 +5,8 @@ const qrcode = require("../qrcode");
 const router = express.Router();
 const telegramAPIBaseUrl = "https://api.telegram.org/bot";
 const usersUrl = "https://api-project-941743174493.firebaseio.com/users.json";
+const patchUserUrl = () =>
+  `https://api-project-941743174493.firebaseio.com/users/${userid}.json`;
 
 const handleNewMessage = async (req, res, _next) => {
   console.log(req.body);
@@ -17,6 +19,7 @@ const handleNewMessage = async (req, res, _next) => {
   console.log(userFound);
   if (userFound) {
     console.log("user found!");
+    patchUser(userFound.chat_id, { count: userFound.count + 1 });
   } else {
     console.log("User not found, creating ...");
     await createUser({
@@ -64,6 +67,25 @@ const handleNewMessage = async (req, res, _next) => {
 const getDBUser = async (chatId) => {
   const users = await readUsersList();
   return users.find((user) => user.chat_id === chatId);
+};
+
+const patchUser = async (id, data) => {
+  let response;
+  try {
+    response = await fetch(patchUserUrl(id), {
+      method: "PATCH",
+      body: JSON.stringify(data),
+      headers: { "Content-Type": "application/json" },
+    });
+    console.log("User updated");
+  } catch (e) {
+    console.log("User not updated");
+    throw new Error(e);
+  }
+
+  if (response.status === 200) {
+    console.log("User updated with success");
+  }
 };
 
 const createUser = async (user) => {
