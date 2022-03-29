@@ -54,11 +54,15 @@ const handleNewMessage = async (req, res, _next) => {
         console.log("User is not premium");
         console.log("Sending message for payment");
         // send message for payment
-        sendMessage({
-          chat_id: chatId,
-          method: "sendMessage",
-          text: `Hai raggiunto il limite di ${FREE_COUNT_THRESHOLD} QR code generati gratuitamente. Per continuare ad utilizzare il servizio SENZA LIMITI effettua il pagamento del piano premium che ti garantisce un numero illimitato di QR code generati.`,
-        });
+        try {
+          sendMessage({
+            chat_id: chatId,
+            method: "sendMessage",
+            text: `Hai raggiunto il limite di ${FREE_COUNT_THRESHOLD} QR code generati gratuitamente. Per continuare ad utilizzare il servizio SENZA LIMITI effettua il pagamento del piano premium che ti garantisce un numero illimitato di QR code generati.`,
+          });
+        } catch (e) {
+          console.error("Telegram communication error", e);
+        }
         closeRequest(res);
       }
     }
@@ -83,16 +87,26 @@ const handleNewMessage = async (req, res, _next) => {
     async (error, readStream) => {
       if (!error) {
         console.log("QR code created: sending to user ...");
-        sendPhoto(chatId, readStream);
+        try {
+          sendPhoto(chatId, readStream);
+        } catch (e) {
+          console.error("Telegram communication error", e);
+          closeRequest(res);
+        }
       } else {
         console.error(
           "Error while creating QR code: sending error message to user ..."
         );
-        sendMessage({
-          chat_id: req.body.message.chat.id,
-          method: "sendMessage",
-          text: "Something went wrong, please try again later.",
-        });
+        try {
+          sendMessage({
+            chat_id: req.body.message.chat.id,
+            method: "sendMessage",
+            text: "Something went wrong, please try again later.",
+          });
+        } catch (e) {
+          console.error("Telegram communication error", e);
+          closeRequest(res);
+        }
       }
       closeRequest(res);
     }

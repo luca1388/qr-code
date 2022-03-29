@@ -9,29 +9,25 @@ const getDBUser = async (chatId) => {
 
 const patchUser = async (id, data) => {
   let response;
-  console.log("patching user with data:");
-  console.log(data);
+  console.log("Patching user");
   try {
     response = await fetch(patchUserUrl(id), {
       method: "PATCH",
       body: JSON.stringify(data),
       headers: { "Content-Type": "application/json" },
     });
-    console.log("User updated");
   } catch (e) {
-    console.log("User not updated");
-    throw new Error(e);
+    console.error("User NOT updated");
+    console.error(e);
   }
 
   if (response.status === 200) {
-    console.log("User updated with success");
+    console.log("User updated");
   }
 };
 
 const createUser = async (user) => {
-  console.log("Creating this user: ");
-  console.log(user);
-  console.log(`url: ${usersUrl}`);
+  console.log("Creating new user");
   let response;
   try {
     response = await fetch(usersUrl, {
@@ -39,24 +35,18 @@ const createUser = async (user) => {
       body: JSON.stringify(user),
       headers: { "Content-Type": "application/json" },
     });
-    console.log("User created");
   } catch (e) {
-    console.log("User not created");
-    throw new Error(e);
+    console.error("User NOT created");
+    console.error(e);
   }
 
-  console.log(response.status);
   if (response.status === 200) {
-    console.log("User created with success");
+    console.log("User created");
   }
-
-  const data = await response.json();
-
-  // id of new item created in DB
-  return data.name;
 };
 
 const readUsersList = async () => {
+  console.log("Getting users list");
   let response, users;
   try {
     response = await fetch(usersUrl, {
@@ -64,7 +54,9 @@ const readUsersList = async () => {
       headers: { "Content-Type": "application/json" },
     });
     users = await response.json();
+    console.log("Users list read");
   } catch (e) {
+    console.error("Not possible to get users list");
     console.error(e);
     users = [];
   }
