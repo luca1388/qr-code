@@ -32,6 +32,7 @@ const handleNewMessage = async (req, res, _next) => {
           text: `Hai raggiunto il limite di ${FREE_COUNT_THRESHOLD} QR code generati gratuitamente. Per continuare ad utilizzare il servizio SENZA LIMITI effettua il pagamento del piano premium che ti garantisce un numero illimitato di QR code generati.`,
         });
         res.end();
+        return;
       }
     }
   } else {
