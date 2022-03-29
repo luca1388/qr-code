@@ -7,7 +7,7 @@ const router = express.Router();
 const FREE_COUNT_THRESHOLD = 5;
 
 const handleNewMessage = async (req, res, _next) => {
-  console.log("New mwessage received");
+  console.log("New message received");
 
   const { message } = req.body;
   const { from, chat } = message;
