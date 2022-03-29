@@ -5,7 +5,7 @@ const qrcode = require("../qrcode");
 const router = express.Router();
 const telegramAPIBaseUrl = "https://api.telegram.org/bot";
 const usersUrl = "https://api-project-941743174493.firebaseio.com/users.json";
-const patchUserUrl = () =>
+const patchUserUrl = (userid) =>
   `https://api-project-941743174493.firebaseio.com/users/${userid}.json`;
 
 const handleNewMessage = async (req, res, _next) => {
