@@ -14,9 +14,32 @@ const handleNewMessage = async (req, res, _next) => {
   console.log(req.body);
   const { message } = req.body;
   const { from, chat } = message;
-
   const chatId = chat.id;
   const userId = from.id;
+
+  if (message.text[0] === "/") {
+    const command = message.text.toLowerCase().split("/")[1];
+    // debug message
+    sendMessage({
+      chat_id: chatId,
+      method: "sendMessage",
+      text: `Command detected: ${command}`,
+    });
+    // command detected
+    switch (command) {
+      case "status":
+        // Get user status and send count back
+        break;
+      case "help":
+        // send generic information to user about how the bot is working
+        break;
+      default:
+      // Send not understand message
+    }
+    res.end();
+    return;
+  }
+
   const userFound = await getDBUser(chatId);
   console.log(userFound);
   if (userFound) {
