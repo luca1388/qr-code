@@ -33,6 +33,12 @@ const handleNewMessage = async (req, res, _next) => {
       case "help":
         // send generic information to user about how the bot is working
         break;
+      case "start":
+        // send welcome message
+        break;
+      case "delete":
+        // Erase data from database
+        break;
       default:
       // Send not understand message
     }
