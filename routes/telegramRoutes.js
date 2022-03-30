@@ -11,6 +11,11 @@ const handleNewMessage = async (req, res, _next) => {
   console.log("New message received");
 
   const { message } = req.body;
+  if (!message) {
+    console.log("Empty message received");
+    console.log(req.body);
+    closeRequest(res);
+  }
   const { from, chat } = message;
   const chatId = chat.id;
   const userId = from.id;
@@ -20,8 +25,6 @@ const handleNewMessage = async (req, res, _next) => {
 
   if (message.text[0] === "/") {
     const command = message.text.toLowerCase().split("/")[1];
-    // debug message
-    console.log(`Command detected: ${command}`);
     // TODO: remove
     sendMessage({
       chat_id: chatId,
@@ -73,11 +76,11 @@ const handleNewMessage = async (req, res, _next) => {
         });
         break;
       default:
+        // Send not understand message
         sendMessage({
           chat_id: chatId,
           text: dictionary.unknownCommand,
         });
-      // Send not understand message
     }
     closeRequest(res);
   }
