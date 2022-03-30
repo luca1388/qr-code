@@ -27,12 +27,6 @@ const handleNewMessage = async (req, res, _next) => {
 
   if (message.text[0] === "/") {
     const command = message.text.toLowerCase().split("/")[1];
-    // TODO: remove
-    sendMessage({
-      chat_id: chatId,
-      method: "sendMessage",
-      text: `Command detected: ${command}`,
-    });
     // command detected
     switch (command) {
       case "informazioni":
