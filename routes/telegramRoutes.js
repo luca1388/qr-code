@@ -14,7 +14,8 @@ const FREE_COUNT_THRESHOLD = 5;
 const handleNewMessage = async (req, res, _next) => {
   console.log("New message received");
 
-  const { message, callback_query } = req.body;
+  const { callback_query } = req.body.callback_query;
+  let message = req.body.message;
   if (!message && !callback_query) {
     console.log("Empty message received");
     console.log(req.body);
