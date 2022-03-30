@@ -18,6 +18,9 @@ const handleNewMessage = async (req, res, _next) => {
   if (!message && !callback_query) {
     console.log("Empty message received");
     console.log(req.body);
+    res.end();
+    closeRequest();
+    return;
   }
   const from = message?.from;
   const chat = message?.chat;
