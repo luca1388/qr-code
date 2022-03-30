@@ -38,7 +38,7 @@ const handleNewMessage = async (req, res, _next) => {
     richMessage = callback_query.data;
   }
 
-  if (message?.text[0] === "/") {
+  if (richMessage[0] === "/") {
     const command = message.text.toLowerCase().split("/")[1];
     // command detected
     switch (command) {
