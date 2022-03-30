@@ -28,15 +28,15 @@ const handleNewMessage = async (req, res, _next) => {
   const userId = from?.id;
 
   console.log("Incoming message: ");
-  console.log(message.text);
+  console.log(message?.text);
 
-  if (callback_query) {
+  if (callback_query && !message) {
     message = {
       text: callback_query.data,
     };
   }
 
-  if (message.text[0] === "/") {
+  if (message?.text[0] === "/") {
     const command = message.text.toLowerCase().split("/")[1];
     // command detected
     switch (command) {
