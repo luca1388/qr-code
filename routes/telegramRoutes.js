@@ -39,7 +39,7 @@ const handleNewMessage = async (req, res, _next) => {
   }
 
   if (richMessage[0] === "/") {
-    const command = message.text.toLowerCase().split("/")[1];
+    const command = richMessage.toLowerCase().split("/")[1];
     // command detected
     switch (command) {
       case "informazioni":
@@ -140,7 +140,7 @@ const handleNewMessage = async (req, res, _next) => {
 
     console.log("Start creating QR code");
     qrcode.createImageFromTextSync(
-      message.text,
+      richMessage,
       `${chatId}`,
       async (error, readStream) => {
         if (!error) {
