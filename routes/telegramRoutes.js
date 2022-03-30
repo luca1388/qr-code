@@ -33,7 +33,7 @@ const handleNewMessage = async (req, res, _next) => {
 
   console.log("Incoming message: ");
   console.log(message?.text);
-
+  console.log(callback_query);
   if (callback_query) {
     richMessage = callback_query.data;
   }
