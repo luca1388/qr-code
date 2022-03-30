@@ -14,7 +14,9 @@ const handleNewMessage = async (req, res, _next) => {
   if (!message) {
     console.log("Empty message received");
     console.log(req.body);
-    closeRequest(res);
+    closeRequest();
+    res.end();
+    return;
   }
   const { from, chat } = message;
   const chatId = chat.id;
@@ -82,82 +84,91 @@ const handleNewMessage = async (req, res, _next) => {
           text: dictionary.unknownCommand,
         });
     }
-    closeRequest(res);
-  }
-
-  const userFound = await getDBUser(chatId);
-  if (userFound) {
-    console.log("User already provisioned");
-
-    if (userFound.count > FREE_COUNT_THRESHOLD) {
-      console.log("User exceeds free count limit");
-      if (!userFound.premium) {
-        console.log("User is not premium");
-        console.log("Sending message for payment");
-        // send message for payment
-        try {
-          sendMessage({
-            chat_id: chatId,
-            method: "sendMessage",
-            text: `Hai raggiunto il limite di ${FREE_COUNT_THRESHOLD} QR code generati gratuitamente. Per continuare ad utilizzare il servizio SENZA LIMITI effettua il pagamento del piano premium che ti garantisce un numero illimitato di QR code generati.`,
-          });
-        } catch (e) {
-          console.error("Telegram communication error", e);
-        }
-        closeRequest(res);
-      }
-    }
+    closeRequest();
+    res.end();
+    return;
   } else {
-    console.log("User not found, creating ...");
-    await createUser({
-      chat_id: chatId,
-      payment_id: undefined,
-      from_id: userId,
-      count: 0,
-      premium: false,
-    });
-  }
+    const userFound = await getDBUser(chatId);
+    if (userFound) {
+      console.log("User already provisioned");
 
-  console.log("Updating qr counts for user");
-  await patchUser(userFound.id, { count: userFound.count + 1 });
-
-  console.log("Start creating QR code");
-  qrcode.createImageFromTextSync(
-    message.text,
-    `${chatId}`,
-    async (error, readStream) => {
-      if (!error) {
-        console.log("QR code created: sending to user ...");
-        try {
-          sendPhoto(chatId, readStream);
-        } catch (e) {
-          console.error("Telegram communication error", e);
-          closeRequest(res);
-        }
-      } else {
-        console.error(
-          "Error while creating QR code: sending error message to user ..."
-        );
-        try {
-          sendMessage({
-            chat_id: req.body.message.chat.id,
-            method: "sendMessage",
-            text: "Something went wrong, please try again later.",
-          });
-        } catch (e) {
-          console.error("Telegram communication error", e);
-          closeRequest(res);
+      if (userFound.count > FREE_COUNT_THRESHOLD) {
+        console.log("User exceeds free count limit");
+        if (!userFound.premium) {
+          console.log("User is not premium");
+          console.log("Sending message for payment");
+          // send message for payment
+          try {
+            sendMessage({
+              chat_id: chatId,
+              method: "sendMessage",
+              text: `Hai raggiunto il limite di ${FREE_COUNT_THRESHOLD} QR code generati gratuitamente. Per continuare ad utilizzare il servizio SENZA LIMITI effettua il pagamento del piano premium che ti garantisce un numero illimitato di QR code generati.`,
+            });
+          } catch (e) {
+            console.error("Telegram communication error", e);
+          }
+          closeRequest();
+          res.end();
+          return;
         }
       }
-      closeRequest(res);
+    } else {
+      console.log("User not found, creating ...");
+      await createUser({
+        chat_id: chatId,
+        payment_id: undefined,
+        from_id: userId,
+        count: 0,
+        premium: false,
+      });
     }
-  );
+
+    console.log("Updating qr counts for user");
+    await patchUser(userFound.id, { count: userFound.count + 1 });
+
+    console.log("Start creating QR code");
+    qrcode.createImageFromTextSync(
+      message.text,
+      `${chatId}`,
+      async (error, readStream) => {
+        if (!error) {
+          console.log("QR code created: sending to user ...");
+          try {
+            sendPhoto(chatId, readStream);
+          } catch (e) {
+            console.error("Telegram communication error", e);
+            closeRequest();
+            res.end();
+            return;
+          }
+        } else {
+          console.error(
+            "Error while creating QR code: sending error message to user ..."
+          );
+          try {
+            sendMessage({
+              chat_id: req.body.message.chat.id,
+              method: "sendMessage",
+              text: "Something went wrong, please try again later.",
+            });
+          } catch (e) {
+            console.error("Telegram communication error", e);
+            closeRequest();
+            res.end();
+            return;
+          }
+        }
+        res.end();
+        return;
+      }
+    );
+  }
 };
 
-const closeRequest = (res) => {
+const closeRequest = () => {
   console.log("Request closed");
-  res.end();
-  return;
+  // res.end();
+  // return;
 };
 
 router.post("/", handleNewMessage);
