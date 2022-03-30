@@ -18,13 +18,11 @@ const handleNewMessage = async (req, res, _next) => {
   if (!message && !callback_query) {
     console.log("Empty message received");
     console.log(req.body);
-    closeRequest();
-    res.end();
-    return;
   }
-  const { from, chat } = message;
-  const chatId = chat.id;
-  const userId = from.id;
+  const from = message?.from;
+  const chat = message?.chat;
+  const chatId = chat?.id;
+  const userId = from?.id;
 
   console.log("Incoming message: ");
   console.log(message.text);
