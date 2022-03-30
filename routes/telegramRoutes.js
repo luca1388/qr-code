@@ -1,7 +1,11 @@
 const express = require("express");
 const qrcode = require("../qrcode");
 const { createUser, getDBUser, patchUser } = require("../models/users");
-const { sendMessage, sendPhoto } = require("../telegram");
+const {
+  sendMessage,
+  sendPhoto,
+  editMessageReplyMarkup,
+} = require("../telegram");
 const dictionary = require("../i18n.json");
 
 const router = express.Router();
@@ -10,8 +14,8 @@ const FREE_COUNT_THRESHOLD = 5;
 const handleNewMessage = async (req, res, _next) => {
   console.log("New message received");
 
-  const { message } = req.body;
-  if (!message) {
+  const { message, callback_query } = req.body;
+  if (!message && !callback_query) {
     console.log("Empty message received");
     console.log(req.body);
     closeRequest();
@@ -24,6 +28,12 @@ const handleNewMessage = async (req, res, _next) => {
 
   console.log("Incoming message: ");
   console.log(message.text);
+
+  if (callback_query) {
+    message = {
+      text: callback_query.data,
+    };
+  }
 
   if (message.text[0] === "/") {
     const command = message.text.toLowerCase().split("/")[1];
@@ -60,15 +70,21 @@ const handleNewMessage = async (req, res, _next) => {
               [
                 {
                   text: "No, voglio restare!",
-                  callback_data: "A1",
+                  callback_data: "/logout-abort",
                 },
                 {
                   text: "Si, addio.. o arrivederci?",
-                  callback_data: "C1",
+                  callback_data: "/logout-confirm",
                 },
               ],
             ],
           },
+        });
+        break;
+      case "/logout-confirm":
+      case "/logout-abort":
+        editMessageReplyMarkup({
+          inline_message_id: callback_query.message.message_id,
         });
         break;
       default:

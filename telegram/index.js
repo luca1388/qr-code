@@ -20,7 +20,16 @@ const sendPhoto = async (chatId, readStream) => {
   });
 };
 
+const editMessageReplyMarkup = async (sendObject) => {
+  await fetch(`${telegramAPIBaseUrl}/editMessageReplyMarkup`, {
+    method: "POST",
+    body: JSON.stringify(sendObject),
+    headers: { "Content-Type": "application/json" },
+  });
+};
+
 module.exports = {
   sendMessage: sendMessage,
   sendPhoto: sendPhoto,
+  editMessageReplyMarkup: editMessageReplyMarkup,
 };
