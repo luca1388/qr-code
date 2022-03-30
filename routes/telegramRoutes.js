@@ -13,15 +13,18 @@ const FREE_COUNT_THRESHOLD = 5;
 
 const handleNewMessage = async (req, res, _next) => {
   console.log("New message received");
+  let richMessage;
 
-  const { callback_query } = req.body;
-  let message = req.body.message;
+  const { callback_query, message } = req.body;
   if (!message && !callback_query) {
     console.log("Empty message received");
     console.log(req.body);
     res.end();
     closeRequest();
     return;
+  }
+  if (message?.text) {
+    richMessage = message?.text;
   }
   const from = message?.from;
   const chat = message?.chat;
@@ -31,10 +34,8 @@ const handleNewMessage = async (req, res, _next) => {
   console.log("Incoming message: ");
   console.log(message?.text);
 
-  if (callback_query && !message) {
-    message = {
-      text: callback_query.data,
-    };
+  if (callback_query) {
+    richMessage = callback_query.data;
   }
 
   if (message?.text[0] === "/") {
@@ -124,6 +125,8 @@ const handleNewMessage = async (req, res, _next) => {
           return;
         }
       }
+      console.log("Updating qr counts for user");
+      await patchUser(userFound.id, { count: userFound.count + 1 });
     } else {
       console.log("User not found, creating ...");
       await createUser({
@@ -134,9 +137,6 @@ const handleNewMessage = async (req, res, _next) => {
         premium: false,
       });
     }
-
-    console.log("Updating qr counts for user");
-    await patchUser(userFound.id, { count: userFound.count + 1 });
 
     console.log("Start creating QR code");
     qrcode.createImageFromTextSync(
