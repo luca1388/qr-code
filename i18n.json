@@ -1,0 +1,9 @@
+{
+    "welcome": "Ciao! 👋 Ti diamo il benvenuto nel servizio di generazione di QR code più simpatico che ci sia 🤗🤪 Per creare il tuo primo QR code prova a scrivere un qualsiasi testo nella chat e inviarlo! 📩 Riceverai come risposta una immagine che rappresenta il QR code del tuo testo 🆒 Puoi mandarmi qualsiasi testo, anche un indirizzo web 🌐 e io ti manderò il relativo QR code!",
+    "qrCodeMakerError": "⚠️ Qualcosa non ha funzionato nel generare il QR code 🤔 Per favore riprova più tardi.",
+    "upgradeRequired": "Hai raggiunto il limite di ${FREE_COUNT_THRESHOLD} QR code generati gratuitamente 😖 Per continuare ad utilizzare il servizio SENZA LIMITI effettua il pagamento del piano premium 💎 che ti garantisce un numero illimitato di QR code generati 👾",
+    "status": "Scusa non conosco ancora questo comando, ma imparo in fretta 🤓",
+    "help": "Per creare un QR code prova a scrivere un qualsiasi testo nella chat e inviarlo! 📩 Riceverai come risposta una immagine che rappresenta il QR code del tuo testo 🆒 Puoi mandarmi qualsiasi testo, anche un indirizzo web 🌐 e io ti manderò il relativo QR code!",
+    "logout": "Sei proprio sicuro di volertene andare? Mi manchi di già 🥺",
+    "unknownCommand": "Non sono sicuro di aver capito mi spiace 😞 Prova a mandarmi un testo qualsiasi per generare il QR code 😎"
+}

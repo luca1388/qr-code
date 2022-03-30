@@ -2,6 +2,7 @@ const express = require("express");
 const qrcode = require("../qrcode");
 const { createUser, getDBUser, patchUser } = require("../models/users");
 const { sendMessage, sendPhoto } = require("../telegram");
+const dictionary = require("../i18n.json");
 
 const router = express.Router();
 const FREE_COUNT_THRESHOLD = 5;
@@ -13,6 +14,9 @@ const handleNewMessage = async (req, res, _next) => {
   const { from, chat } = message;
   const chatId = chat.id;
   const userId = from.id;
+
+  console.log("Incoming message: ");
+  console.log(message.text);
 
   if (message.text[0] === "/") {
     const command = message.text.toLowerCase().split("/")[1];
@@ -26,19 +30,53 @@ const handleNewMessage = async (req, res, _next) => {
     });
     // command detected
     switch (command) {
-      case "status":
+      case "informazioni":
         // Get user status and send count back
+        sendMessage({
+          chat_id: chatId,
+          text: dictionary.status,
+        });
         break;
       case "help":
         // send generic information to user about how the bot is working
+        sendMessage({
+          chat_id: chatId,
+          text: dictionary.help,
+        });
         break;
       case "start":
         // send welcome message
+        sendMessage({
+          chat_id: chatId,
+          text: dictionary.welcome,
+        });
         break;
-      case "delete":
+      case "esci":
         // Erase data from database
+        sendMessage({
+          chat_id: chatId,
+          text: dictionary.logout,
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: "No, voglio restare!",
+                  callback_data: "A1",
+                },
+                {
+                  text: "Si, addio.. o arrivederci?",
+                  callback_data: "C1",
+                },
+              ],
+            ],
+          },
+        });
         break;
       default:
+        sendMessage({
+          chat_id: chatId,
+          text: dictionary.unknownCommand,
+        });
       // Send not understand message
     }
     closeRequest(res);
